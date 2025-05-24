@@ -1,0 +1,12 @@
+{
+  "dialects": {
+    "en": [
+      { "code": "american", "name": "American English" },
+      { "code": "british", "name": "British English" }
+    ],
+    "ja": [
+      { "code": "tokyo", "name": "Tokyo Dialect" },
+      { "code": "kansai", "name": "Kansai Dialect" }
+    ]
+  }
+}

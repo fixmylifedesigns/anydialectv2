@@ -1,0 +1,70 @@
+{
+  "dialects": {
+    "en": [
+      { "code": "american", "name": "American" },
+      { "code": "british", "name": "British" },
+      { "code": "australian", "name": "Australian" },
+      { "code": "canadian", "name": "Canadian" },
+      { "code": "brooklyn", "name": "Brooklyn" }
+    ],
+    "ja": [
+      { "code": "standard", "name": "Standard Japanese" },
+      { "code": "kansai", "name": "Kansai Dialect" },
+      { "code": "tokyo", "name": "Tokyo Dialect" },
+      { "code": "tohoku", "name": "Tohoku Dialect" },
+      { "code": "hakata", "name": "Hakata Dialect" },
+      { "code": "hiroshima", "name": "Hiroshima Dialect" },
+      { "code": "osaka", "name": "Osaka Dialect" },
+      { "code": "kyoto", "name": "Kyoto Dialect" },
+      { "code": "nagoya", "name": "Nagoya Dialect" },
+      { "code": "hokkaido", "name": "Hokkaido Dialect" },
+      { "code": "shikoku", "name": "Shikoku Dialect" },
+      { "code": "fukuoka", "name": "Fukuoka Dialect" },
+      { "code": "okinawan", "name": "Okinawan Dialect" },
+      { "code": "aomori", "name": "Aomori Dialect" },
+      { "code": "kagoshima", "name": "Kagoshima Dialect" },
+      { "code": "niigata", "name": "Niigata Dialect" },
+      { "code": "yamagata", "name": "Yamagata Dialect" },
+      { "code": "miyazaki", "name": "Miyazaki Dialect" },
+      { "code": "gifu", "name": "Gifu Dialect" },
+      { "code": "akita", "name": "Akita Dialect" }
+    ],
+    "es": [
+      { "code": "spain", "name": "Spain" },
+      { "code": "puertorican", "name": "Puertrican" },
+      { "code": "castilian", "name": "Castilian" },
+      { "code": "mexican", "name": "Mexican" },
+      { "code": "argentinian", "name": "Argentinian" },
+      { "code": "colombian", "name": "Colombian" },
+      { "code": "colombian_bogota", "name": "Colombian Bogota" },
+      { "code": "colombian_paisa", "name": "Colombian Paisa" },
+      { "code": "colombian_costeno", "name": "Colombian Costeño" },
+      { "code": "chilean", "name": "Chilean" },
+      { "code": "peruvian", "name": "Peruvian" },
+      { "code": "venezuelan", "name": "Venezuelan" },
+      { "code": "puerto_rican", "name": "Puerto Rican" },
+      { "code": "cuban", "name": "Cuban" },
+      { "code": "dominican", "name": "Dominican" },
+      { "code": "dominican_cibaeno", "name": "Dominican Cibaeño" },
+      { "code": "ecuadorian", "name": "Ecuadorian" },
+      { "code": "bolivian", "name": "Bolivian" },
+      { "code": "paraguayan", "name": "Paraguayan" },
+      { "code": "uruguayan", "name": "Uruguayan" },
+      { "code": "central_american", "name": "Central American" },
+      { "code": "andalusian", "name": "Andalusian" },
+      { "code": "canarian", "name": "Canarian" }
+    ],
+    "zh-CN": [
+      { "code": "standard", "name": "Standard Mandarin" },
+      { "code": "cantonese", "name": "Cantonese" },
+      { "code": "shanghainese", "name": "Shanghainese" },
+      { "code": "hokkien", "name": "Hokkien" }
+    ],
+    "ko": [
+      { "code": "standard", "name": "Standard Korean" },
+      { "code": "gyeongsang", "name": "Gyeongsang Dialect" },
+      { "code": "jeolla", "name": "Jeolla Dialect" },
+      { "code": "chungcheong", "name": "Chungcheong Dialect" }
+    ]
+  }
+}

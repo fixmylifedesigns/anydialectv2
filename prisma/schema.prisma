@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  firebaseId     String           @unique
+  email          String           @unique
+  name           String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  subscriptionId String?
+  tokenBalance   Int              @default(100) // Free tokens for new users
+  subscriptions  Subscription?    @relation(fields: [subscriptionId], references: [id])
+  translations   Translation[]
+  savedPhrases   SavedPhrase[]
+}
+
+model Subscription {
+  id                String   @id @default(uuid())
+  stripeCustomerId  String?  @unique
+  stripePriceId     String?
+  stripeSubscriptionId String? @unique
+  status            String   @default("inactive") // active, inactive, past_due, etc.
+  plan              String   @default("free") // free, basic, premium, etc.
+  monthlyTokens     Int      @default(100)
+  startDate         DateTime @default(now())
+  endDate           DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  users             User[]
+}
+
+model Translation {
+  id              String   @id @default(uuid())
+  userId          String
+  sourceLanguage  String
+  sourceDialect   String?
+  targetLanguage  String
+  targetDialect   String?
+  sourceText      String
+  translatedText  String
+  sourcePronoun   String?
+  targetPronoun   String?
+  formalityLevel  String?  // formal, casual, friendly, etc.
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
+}
+
+model SavedPhrase {
+  id              String   @id @default(uuid())
+  userId          String
+  sourceLanguage  String
+  targetLanguage  String
+  sourceText      String
+  translatedText  String
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
+}
+
+model Language {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  code     String    @unique
+  dialects Dialect[]
+}
+
+model Dialect {
+  id         String   @id @default(uuid())
+  name       String
+  code       String
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  @@unique([languageId, code])
+}

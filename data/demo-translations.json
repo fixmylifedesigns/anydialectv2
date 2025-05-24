@@ -1,0 +1,142 @@
+{
+  "phrases": [
+    {
+      "id": "greeting",
+      "tags": ["greeting", "casual"],
+      "translations": {
+        "en": {
+          "dialect": "american",
+          "variants": {
+            "formal": {
+              "text": "Hello, how are you?",
+              "audio": "/audio/greeting_en_formal.mp3"
+            },
+            "casual": {
+              "text": "Hey, what's up?",
+              "audio": "/audio/greeting_en_casual.mp3"
+            },
+            "friendly": {
+              "text": "Hi there!",
+              "audio": "/audio/greeting_en_friendly.mp3"
+            }
+          }
+        },
+        "ja": {
+          "dialect": "tokyo",
+          "variants": {
+            "formal": {
+              "text": "こんにちは、お元気ですか？",
+              "romanization": "Konnichiwa, o-genki desu ka?",
+              "audio": "/audio/greeting_ja_formal.mp3",
+              "note": "Polite greeting suitable for business or formal situations"
+            },
+            "casual": {
+              "text": "やあ、元気？",
+              "romanization": "Yaa, genki?",
+              "audio": "/audio/greeting_ja_casual.mp3",
+              "note": "Casual greeting among friends"
+            },
+            "friendly": {
+              "text": "おーい、調子どう？",
+              "romanization": "Ooi, choushi dou?",
+              "audio": "/audio/greeting_ja_friendly.mp3",
+              "note": "Very casual, used among close friends"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "thank_you",
+      "tags": ["gratitude"],
+      "translations": {
+        "en": {
+          "dialect": "american",
+          "variants": {
+            "formal": {
+              "text": "Thank you very much",
+              "audio": "/audio/thank_you_en_formal.mp3"
+            },
+            "casual": {
+              "text": "Thanks!",
+              "audio": "/audio/thank_you_en_casual.mp3"
+            },
+            "friendly": {
+              "text": "Thanks a bunch!",
+              "audio": "/audio/thank_you_en_friendly.mp3"
+            }
+          }
+        },
+        "ja": {
+          "dialect": "tokyo",
+          "variants": {
+            "formal": {
+              "text": "ありがとうございます",
+              "romanization": "Arigatou gozaimasu",
+              "audio": "/audio/thank_you_ja_formal.mp3",
+              "note": "Polite expression of gratitude"
+            },
+            "casual": {
+              "text": "ありがとう",
+              "romanization": "Arigatou",
+              "audio": "/audio/thank_you_ja_casual.mp3",
+              "note": "Standard casual thanks"
+            },
+            "friendly": {
+              "text": "どうも！",
+              "romanization": "Doumo!",
+              "audio": "/audio/thank_you_ja_friendly.mp3",
+              "note": "Very casual thanks between friends"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "goodbye",
+      "tags": ["farewell"],
+      "translations": {
+        "en": {
+          "dialect": "american",
+          "variants": {
+            "formal": {
+              "text": "Goodbye, have a nice day",
+              "audio": "/audio/goodbye_en_formal.mp3"
+            },
+            "casual": {
+              "text": "See you later!",
+              "audio": "/audio/goodbye_en_casual.mp3"
+            },
+            "friendly": {
+              "text": "Catch you later!",
+              "audio": "/audio/goodbye_en_friendly.mp3"
+            }
+          }
+        },
+        "ja": {
+          "dialect": "tokyo",
+          "variants": {
+            "formal": {
+              "text": "さようなら",
+              "romanization": "Sayounara",
+              "audio": "/audio/goodbye_ja_formal.mp3",
+              "note": "Formal goodbye, implies long-term parting"
+            },
+            "casual": {
+              "text": "じゃあね",
+              "romanization": "Jaa ne",
+              "audio": "/audio/goodbye_ja_casual.mp3",
+              "note": "Casual 'see you later'"
+            },
+            "friendly": {
+              "text": "またね！",
+              "romanization": "Mata ne!",
+              "audio": "/audio/goodbye_ja_friendly.mp3",
+              "note": "Very casual 'see you'"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
