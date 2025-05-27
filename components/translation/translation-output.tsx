@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Volume2, Download, Copy, Check, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Volume2, Download, Copy, Check, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface TranslationOutputProps {
   translationResult: {
@@ -18,9 +24,10 @@ interface TranslationOutputProps {
   onTargetLanguageChange: (value: string) => void;
   targetDialect: string;
   onTargetDialectChange: (value: string) => void;
-  languages: Array<{ code: string; name: string; }>;
-  dialects: Array<{ code: string; name: string; }>;
+  languages: Array<{ code: string; name: string }>;
+  dialects: Array<{ code: string; name: string }>;
   sourceLanguage?: string;
+  speakerPronouns?: string;
 }
 
 export function TranslationOutput({
@@ -31,20 +38,22 @@ export function TranslationOutput({
   onTargetDialectChange,
   languages,
   dialects,
-  sourceLanguage
+  sourceLanguage,
+  speakerPronouns,
 }: TranslationOutputProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const { toast } = useToast();
-  const isDemo = typeof window !== 'undefined' && window.location.pathname === '/demo';
+  const isDemo =
+    typeof window !== "undefined" && window.location.pathname === "/demo";
 
   // Cleanup function for audio resources
   const cleanupAudio = () => {
     if (audio) {
       audio.pause();
-      audio.removeAttribute('src');
+      audio.removeAttribute("src");
       audio.load();
     }
     if (audioUrl) {
@@ -57,8 +66,8 @@ export function TranslationOutput({
   // Clean up audio resources when component unmounts or translation changes
   useEffect(() => {
     return cleanupAudio;
-  }, []);
-
+  }, [translationResult, speakerPronouns]);
+console.log(speakerPronouns)
   // Handle audio setup when translation result changes
   useEffect(() => {
     cleanupAudio();
@@ -67,9 +76,9 @@ export function TranslationOutput({
 
     if (isDemo) {
       const newAudio = new Audio();
-      
+
       const handleError = () => {
-        console.error('Audio loading error');
+        console.error("Audio loading error");
         toast({
           title: "Error",
           description: "Failed to load audio",
@@ -77,12 +86,12 @@ export function TranslationOutput({
         });
       };
 
-      newAudio.addEventListener('error', handleError);
+      newAudio.addEventListener("error", handleError);
       newAudio.src = translationResult.audio;
       setAudio(newAudio);
 
       return () => {
-        newAudio.removeEventListener('error', handleError);
+        newAudio.removeEventListener("error", handleError);
         cleanupAudio();
       };
     }
@@ -117,7 +126,7 @@ export function TranslationOutput({
           audio.currentTime = 0;
           await audio.play();
         } catch (error) {
-          console.error('Demo audio playback error:', error);
+          console.error("Demo audio playback error:", error);
           toast({
             title: "Error",
             description: "Failed to play audio",
@@ -136,7 +145,7 @@ export function TranslationOutput({
 
     setIsLoadingAudio(true);
     try {
-      const response = await fetch("https://translate.minnastudy.com/api/tts", {
+      const response = await fetch("/api/tts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,6 +153,7 @@ export function TranslationOutput({
         body: JSON.stringify({
           text: translationResult.translation,
           language: targetLanguage,
+          speakerPronouns: speakerPronouns,
         }),
       });
 
@@ -174,9 +184,9 @@ export function TranslationOutput({
     if (!translationResult?.translation) return;
 
     if (isDemo && translationResult?.audio) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = translationResult.audio;
-      link.download = 'translation.mp3';
+      link.download = "translation.mp3";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -184,9 +194,9 @@ export function TranslationOutput({
     }
 
     if (audioUrl) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = audioUrl;
-      link.download = 'translation.mp3';
+      link.download = "translation.mp3";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -196,8 +206,8 @@ export function TranslationOutput({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Select 
-          value={targetLanguage} 
+        <Select
+          value={targetLanguage}
           onValueChange={onTargetLanguageChange}
           disabled={targetLanguage === sourceLanguage}
         >
@@ -206,8 +216,8 @@ export function TranslationOutput({
           </SelectTrigger>
           <SelectContent>
             {languages.map((lang) => (
-              <SelectItem 
-                key={lang.code} 
+              <SelectItem
+                key={lang.code}
                 value={lang.code}
                 disabled={lang.code === sourceLanguage}
               >
@@ -234,7 +244,7 @@ export function TranslationOutput({
       <div className="space-y-2">
         <Textarea
           placeholder="Translation"
-          value={translationResult?.translation || ''}
+          value={translationResult?.translation || ""}
           readOnly
           className="min-h-[200px]"
         />

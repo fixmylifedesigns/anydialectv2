@@ -148,7 +148,7 @@ export function TranslationArea() {
         formality: preferences.formality === 'none' ? undefined : preferences.formality,
       };
 
-      const apiUrl = process.env.NEXT_PUBLIC_TRANSLATION_API_URL || 'https://translate.minnastudy.com/api/translate';
+      const apiUrl = process.env.NEXT_PUBLIC_TRANSLATION_API_URL || '/api/translate';
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -244,6 +244,7 @@ export function TranslationArea() {
               languages={allLanguages}
               dialects={getAvailableDialects()}
               sourceLanguage={preferences.sourceLanguage}
+              speakerPronouns={preferences.speakerPronouns === 'none' ? undefined : preferences.speakerPronouns}
             />
           </div>
         </TabsContent>
