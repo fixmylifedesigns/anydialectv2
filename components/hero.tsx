@@ -25,7 +25,7 @@ function LoadingSpinner() {
   );
 }
 
-export function Hero() {
+export function Hero({ showText = true }: { showText?: boolean }) {
   const { theme } = useTheme();
 
   return (
@@ -49,14 +49,18 @@ export function Hero() {
           {/* <pointLight position={[10, 10, 10]} /> */}
 
           <LoadingSpinner />
-          <OrbitControls enableZoom={false} autoRotate={true} rotateSpeed={2}/>
+          <OrbitControls enableZoom={false} autoRotate={true} rotateSpeed={2} />
         </Canvas>
       </div>
-      <h1 className="text-3xl md:text-4xl font-bold">Lingo Translate</h1>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-        AI-powered translations with dialect support, customizable formality,
-        and natural speech patterns
-      </p>
+      {showText && (
+        <>
+          <h1 className="text-3xl md:text-4xl font-bold">Lingo Translate</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            AI-powered translations with dialect support, customizable
+            formality, and natural speech patterns
+          </p>
+        </>
+      )}
     </div>
   );
 }

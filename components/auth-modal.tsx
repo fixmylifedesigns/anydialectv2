@@ -86,7 +86,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               </span>
               Continue with Google
             </Button>
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               className="w-full relative"
@@ -101,7 +101,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 </svg>
               </span>
               Continue with Apple
-            </Button>
+            </Button> */}
           </div>
         </div>
       </DialogContent>

@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import demoLanguages from "@/data/demo-languages.json";
 import demoDialects from "@/data/demo-dialects.json";
 import Image from "next/image";
+import { Hero } from "@/components/hero";
 
 // Define the preferences interface
 interface TranslationPreferences {
@@ -100,17 +101,8 @@ export default function DemoPage() {
     <div className="container mx-auto px-4 py-6 space-y-8">
       <div className="text-center space-y-4">
         <div className="flex justify-center">
+          <Hero showText={false} />
           {/* <Globe2 className="h-12 w-12 text-primary" /> */}
-          <div className=" text-primary">
-            {theme && (
-              <Image
-                src={theme === "dark" ? "/logo-dark.svg" : "/logo-light.svg"}
-                alt="Logo"
-                width={100}
-                height={100}
-              />
-            )}
-          </div>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold">
           Try Our Translation Demo

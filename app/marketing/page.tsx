@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Hero } from "@/components/hero";
 import {
   Globe2,
   Languages,
@@ -14,11 +15,12 @@ export default function MarketingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
+
       <section className="py-20 px-4 text-center relative overflow-hidden">
+        <Hero showText={false} />
         <div className="container mx-auto max-w-6xl">
-          <Globe2 className="h-16 w-16 mx-auto mb-8 text-primary animate-pulse" />
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Translation that understands{" "}
+            Translation that understands
             <span className="text-primary">context</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
@@ -56,7 +58,7 @@ export default function MarketingPage() {
               </h3>
               <p className="text-muted-foreground">
                 Traditional translators often miss cultural context and nuances,
-                leading to awkward or inappropriate translations that don't
+                leading to awkward or inappropriate translations that don&apos;t
                 capture your intended meaning.
               </p>
             </Card>
@@ -132,7 +134,7 @@ export default function MarketingPage() {
                   <p className="text-sm text-muted-foreground">
                     English (Casual):
                   </p>
-                  <p>"Hey, how's it going?"</p>
+                  <p>&quot;Hey, how&apos;s it going?&quot;</p>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">
