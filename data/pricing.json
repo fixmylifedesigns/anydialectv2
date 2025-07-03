@@ -28,8 +28,8 @@
       "description": "Perfect for regular users",
       "monthlyPrice": 10,
       "priceId": {
-        "monthly": "price_1QxWswE71MX3Ijq29WXOOGeo",
-        "yearly": "price_1QxWvWE71MX3Ijq2gg8BhibJ"
+        "monthly": "price_1RgaWVE71MX3Ijq2xLD9pLIw",
+        "yearly": "price_1RgaWVE71MX3Ijq2YoTE65S4"
       },
       "features": [
         "All core translation features",
@@ -47,11 +47,12 @@
     {
       "name": "Lifetime",
       "description": "One-time payment, forever access",
+      "monthlyPrice": 200,
       "yearlyPrice": 200,
       "oneTime": true,
       "priceId": {
-        "monthly": "price_1QxWswE71MX3Ijq29WXOOGeo",
-        "yearly": "price_1QxWswE71MX3Ijq29WXOOGeo"
+        "monthly": "price_1RgaXkE71MX3Ijq2h7MJPWTz",
+        "yearly": "price_1RgaXkE71MX3Ijq2h7MJPWTz"
       },
       "features": [
         "All core translation features",

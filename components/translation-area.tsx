@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { TranslationInput } from '@/components/translation/translation-input';
 import { TranslationOutput } from '@/components/translation/translation-output';
 import { TranslationOptions } from '@/components/translation/translation-options';
+import { useParams } from 'next/navigation'
 import availableLanguages from '@/data/available-languages.json';
 import dialects from '@/data/dialects.json';
 
@@ -70,12 +71,12 @@ export function TranslationArea() {
   const [preferences, setPreferences] = useState<TranslationPreferences>(defaultPreferences);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  
+  const params = useParams()
   const { user, setShowAuthModal } = useFirebase();
   const { customerData } = useStripe();
   const { toast } = useToast();
   const router = useRouter();
-
+console.log(params)
   const allLanguages = [
     ...availableLanguages.languages,
     ...preferences.customLanguages.map(lang => ({

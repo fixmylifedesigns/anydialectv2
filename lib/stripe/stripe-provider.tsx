@@ -14,6 +14,7 @@ interface StripeContextType {
   customerData: StripeCustomerData | null;
   isLoading: boolean;
   refetchCustomer: () => Promise<void>;
+  updateCustomer: (data: StripeCustomerData) => void;
 }
 
 const StripeContext = createContext<StripeContextType | undefined>(undefined);
@@ -26,6 +27,7 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
   const { user } = useFirebase();
   const { toast } = useToast();
 
+  const updateCustomer = (data: StripeCustomerData) => setCustomerData(data);
   const fetchCustomerData = async (email: string) => {
     try {
       const response = await fetch("/api/check-customer", {
@@ -72,7 +74,7 @@ export function StripeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <StripeContext.Provider
-      value={{ customerData, isLoading, refetchCustomer }}
+      value={{ customerData, isLoading, refetchCustomer, updateCustomer }}
     >
       {children}
     </StripeContext.Provider>
