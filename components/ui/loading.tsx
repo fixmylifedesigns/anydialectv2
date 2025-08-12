@@ -10,29 +10,35 @@ function LoadingSpinner() {
 
   useFrame(() => {
     if (meshRef.current) {
-      // meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
+      meshRef.current.rotation.y += 0.015; // slightly faster to feel alive
     }
   });
 
   return (
     <mesh ref={meshRef}>
-      <Logo scale={[3, 3, 3]} metalness={0.5} roughness={0.3} />
+      {/* Smaller logo for subtler footprint */}
+      <Logo scale={[1.5, 1.5, 1.5]} metalness={0.5} roughness={0.3} />
     </mesh>
   );
 }
 
+/**
+ * Full‑width flex wrapper keeps the canvas centred horizontally and vertically.
+ * Height is fixed (6rem ≈ 96 px) so the page doesn’t jump when the loader disappears.
+ */
 export function Loading() {
   return (
-    <Canvas
-      className="flex items-center justify-center min-h-[200px]"
-      camera={{ position: [0, 0, 5] }}
-      gl={{ antialias: true }}
-    >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
+    <div className="flex items-center justify-center w-full h-24 md:h-32">
+      <Canvas
+        camera={{ position: [0, 0, 4] }}
+        gl={{ antialias: true, alpha: true }}
+        className="w-24 h-24 md:w-32 md:h-32"
+      >
+        <ambientLight intensity={0.6} />
+        <pointLight position={[10, 10, 10]} />
 
-      <LoadingSpinner />
-    </Canvas>
+        <LoadingSpinner />
+      </Canvas>
+    </div>
   );
 }

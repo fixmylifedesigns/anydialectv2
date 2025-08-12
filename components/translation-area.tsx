@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFirebase } from '@/lib/firebase/firebase-provider';
-import { useStripe } from '@/lib/stripe/stripe-provider';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { TranslationInput } from '@/components/translation/translation-input';
-import { TranslationOutput } from '@/components/translation/translation-output';
-import { TranslationOptions } from '@/components/translation/translation-options';
-import { useParams } from 'next/navigation'
-import availableLanguages from '@/data/available-languages.json';
-import dialects from '@/data/dialects.json';
+import React, { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useFirebase } from "@/lib/firebase/firebase-provider";
+import { useStripe } from "@/lib/stripe/stripe-provider";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { TranslationInput } from "@/components/translation/translation-input";
+import { TranslationOutput } from "@/components/translation/translation-output";
+import { TranslationOptions } from "@/components/translation/translation-options";
+import { useParams } from "next/navigation";
+import availableLanguages from "@/data/available-languages.json";
+import dialects from "@/data/dialects.json";
 
 interface TranslationResponse {
   translation: string;
@@ -33,26 +33,26 @@ interface TranslationPreferences {
   customLanguages: {
     code: string;
     name: string;
-    dialects: { code: string; name: string; }[];
+    dialects: { code: string; name: string }[];
   }[];
 }
 
 const defaultPreferences: TranslationPreferences = {
-  sourceLanguage: 'en',
-  targetLanguage: 'ja',
-  targetDialect: 'standard',
-  speakerPronouns: 'none',
-  listenerPronouns: 'none',
-  formality: 'none',
+  sourceLanguage: "en",
+  targetLanguage: "ja",
+  targetDialect: "standard",
+  speakerPronouns: "none",
+  listenerPronouns: "none",
+  formality: "none",
   customLanguages: [],
 };
 
 function loadPreferences(): TranslationPreferences {
-  if (typeof window === 'undefined') return defaultPreferences;
-  
-  const saved = localStorage.getItem('translationPreferences');
+  if (typeof window === "undefined") return defaultPreferences;
+
+  const saved = localStorage.getItem("translationPreferences");
   if (!saved) return defaultPreferences;
-  
+
   try {
     const parsed = JSON.parse(saved);
     return {
@@ -60,35 +60,42 @@ function loadPreferences(): TranslationPreferences {
       ...parsed,
     };
   } catch (e) {
-    console.error('Failed to parse saved preferences:', e);
+    console.error("Failed to parse saved preferences:", e);
     return defaultPreferences;
   }
 }
 
 export function TranslationArea() {
-  const [sourceText, setSourceText] = useState('');
-  const [translationResult, setTranslationResult] = useState<TranslationResponse | null>(null);
-  const [preferences, setPreferences] = useState<TranslationPreferences>(defaultPreferences);
+  const [sourceText, setSourceText] = useState("");
+  const [translationResult, setTranslationResult] =
+    useState<TranslationResponse | null>(null);
+  const [preferences, setPreferences] =
+    useState<TranslationPreferences>(defaultPreferences);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const params = useParams()
+  const params = useParams();
   const { user, setShowAuthModal } = useFirebase();
   const { customerData } = useStripe();
   const { toast } = useToast();
   const router = useRouter();
-console.log(params)
+  console.log(params);
   const allLanguages = [
     ...availableLanguages.languages,
-    ...preferences.customLanguages.map(lang => ({
+    ...preferences.customLanguages.map((lang) => ({
       code: lang.code,
       name: lang.name,
-      romaji: ''
-    }))
+      romaji: "",
+    })),
   ];
 
   const getAvailableDialects = () => {
-    const builtInDialects = dialects.dialects[preferences.targetLanguage as keyof typeof dialects.dialects] || [];
-    const customLanguage = preferences.customLanguages.find(lang => lang.code === preferences.targetLanguage);
+    const builtInDialects =
+      dialects.dialects[
+        preferences.targetLanguage as keyof typeof dialects.dialects
+      ] || [];
+    const customLanguage = preferences.customLanguages.find(
+      (lang) => lang.code === preferences.targetLanguage
+    );
     const customDialects = customLanguage?.dialects || [];
     return [...builtInDialects, ...customDialects];
   };
@@ -101,20 +108,27 @@ console.log(params)
 
   useEffect(() => {
     if (!isInitialized) return;
-    localStorage.setItem('translationPreferences', JSON.stringify(preferences));
+    localStorage.setItem("translationPreferences", JSON.stringify(preferences));
   }, [preferences, isInitialized]);
 
   useEffect(() => {
     setTranslationResult(null);
-  }, [preferences.sourceLanguage, preferences.targetLanguage, preferences.targetDialect]);
+  }, [
+    preferences.sourceLanguage,
+    preferences.targetLanguage,
+    preferences.targetDialect,
+  ]);
 
-  const updatePreference = (key: keyof TranslationPreferences, value: string) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
+  const updatePreference = (
+    key: keyof TranslationPreferences,
+    value: string
+  ) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleTranslate = async () => {
-    const devMode = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
-    
+    const devMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
+
     if (!devMode) {
       if (!user) {
         setShowAuthModal(true);
@@ -122,7 +136,7 @@ console.log(params)
       }
 
       if (!customerData?.activeSubscription) {
-        router.push('/pricing');
+        router.push("/pricing");
         return;
       }
     }
@@ -143,23 +157,36 @@ console.log(params)
         text: sourceText,
         sourceLanguage: preferences.sourceLanguage,
         targetLanguage: preferences.targetLanguage,
-        targetDialect: getAvailableDialects().length > 0 ? preferences.targetDialect : undefined,
-        speakerPronouns: preferences.speakerPronouns === 'none' ? undefined : preferences.speakerPronouns,
-        listenerPronouns: preferences.listenerPronouns === 'none' ? undefined : preferences.listenerPronouns,
-        formality: preferences.formality === 'none' ? undefined : preferences.formality,
+        targetDialect:
+          getAvailableDialects().length > 0
+            ? preferences.targetDialect
+            : undefined,
+        speakerPronouns:
+          preferences.speakerPronouns === "none"
+            ? undefined
+            : preferences.speakerPronouns,
+        listenerPronouns:
+          preferences.listenerPronouns === "none"
+            ? undefined
+            : preferences.listenerPronouns,
+        formality:
+          preferences.formality === "none" ? undefined : preferences.formality,
+        uid: user?.providerData[0]?.uid,
+        userEmail: user?.providerData[0]?.email,
       };
+      console.log("Translation payload:", payload);
+      const apiUrl =
+        process.env.NEXT_PUBLIC_TRANSLATION_API_URL || "/api/translate";
 
-      const apiUrl = process.env.NEXT_PUBLIC_TRANSLATION_API_URL || '/api/translate';
-      
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': window.location.origin,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Origin: window.location.origin,
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
@@ -169,14 +196,14 @@ console.log(params)
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({
-          message: `Server returned ${response.status}: ${response.statusText}`
+          message: `Server returned ${response.status}: ${response.statusText}`,
         }));
-        throw new Error(errorData.message || 'Translation request failed');
+        throw new Error(errorData.message || "Translation request failed");
       }
 
       const data: TranslationResponse = await response.json();
       setTranslationResult(data);
-      
+
       if (data.notes) {
         toast({
           title: "Translation complete",
@@ -184,12 +211,13 @@ console.log(params)
         });
       }
     } catch (error) {
-      console.error('Translation error:', error);
+      console.error("Translation error:", error);
       toast({
         title: "Translation Failed",
-        description: error instanceof Error 
-          ? error.message 
-          : "Unable to connect to translation service. Please try again later.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Unable to connect to translation service. Please try again later.",
         variant: "destructive",
       });
       setTranslationResult(null);
@@ -199,10 +227,10 @@ console.log(params)
   };
 
   const handleSwitchLanguages = () => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
       sourceLanguage: prev.targetLanguage,
-      targetLanguage: prev.sourceLanguage
+      targetLanguage: prev.sourceLanguage,
     }));
     if (translationResult) {
       setSourceText(translationResult.translation);
@@ -221,14 +249,16 @@ console.log(params)
           <TabsTrigger value="translate">Translate</TabsTrigger>
           <TabsTrigger value="options">Translation Options</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="translate" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TranslationInput
               sourceText={sourceText}
               setSourceText={setSourceText}
               sourceLanguage={preferences.sourceLanguage}
-              onSourceLanguageChange={(value) => updatePreference('sourceLanguage', value)}
+              onSourceLanguageChange={(value) =>
+                updatePreference("sourceLanguage", value)
+              }
               onTranslate={handleTranslate}
               isLoading={isLoading}
               languages={allLanguages}
@@ -239,13 +269,21 @@ console.log(params)
             <TranslationOutput
               translationResult={translationResult}
               targetLanguage={preferences.targetLanguage}
-              onTargetLanguageChange={(value) => updatePreference('targetLanguage', value)}
+              onTargetLanguageChange={(value) =>
+                updatePreference("targetLanguage", value)
+              }
               targetDialect={preferences.targetDialect}
-              onTargetDialectChange={(value) => updatePreference('targetDialect', value)}
+              onTargetDialectChange={(value) =>
+                updatePreference("targetDialect", value)
+              }
               languages={allLanguages}
               dialects={getAvailableDialects()}
               sourceLanguage={preferences.sourceLanguage}
-              speakerPronouns={preferences.speakerPronouns === 'none' ? undefined : preferences.speakerPronouns}
+              speakerPronouns={
+                preferences.speakerPronouns === "none"
+                  ? undefined
+                  : preferences.speakerPronouns
+              }
             />
           </div>
         </TabsContent>

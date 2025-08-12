@@ -69,7 +69,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
     await auth?.signOut();
     router.refresh();
   };
-
+console.log(theme)
   return (
     <div
       className={`fixed left-0 top-0 flex h-screen w-16 flex-col border-r bg-card ${className}`}
@@ -78,7 +78,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
         <Link href="/" className="flex items-center justify-center">
           {theme && (
             <Image
-              src={theme === "dark" ? "/logo-dark.svg" : "/logo-light.svg"}
+              src={theme === "dark" || theme === "system"  ? "/logo-dark.svg" : "/logo-light.svg"}
               alt="Logo"
               width={60}
               height={60}

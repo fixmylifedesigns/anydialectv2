@@ -1,10 +1,36 @@
 import { NextResponse } from "next/server";
 
+const ALLOW_ORIGIN = "https://anydialect.duranirving.com";
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_TABLE = process.env.AIRTABLE_TABLE_NAME; // e.g. "Translations"
+const AIRTABLE_TOKEN = process.env.AIRTABLE_ACCESS_TOKEN;
+
+async function logToAirtable(fields) {
+  const res = await fetch(
+    `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(
+      AIRTABLE_TABLE
+    )}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ records: [{ fields }] }),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.error("Airtable logging failed:", res.status, err);
+  }
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
     headers: {
-      "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
+      "Access-Control-Allow-Origin": ALLOW_ORIGIN,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Access-Control-Max-Age": "86400",
@@ -22,6 +48,8 @@ export async function POST(request) {
       speakerPronouns,
       listenerPronouns,
       formality,
+      uid,
+      userEmail,
     } = await request.json();
 
     if (!text) {
@@ -32,7 +60,7 @@ export async function POST(request) {
           headers: {
             "Cache-Control":
               "no-store, no-cache, must-revalidate, proxy-revalidate",
-            "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
+            "Access-Control-Allow-Origin": ALLOW_ORIGIN,
           },
         }
       );
@@ -90,7 +118,7 @@ export async function POST(request) {
         "notes": "[EXPLAIN how formality was applied. For 'superior', specify how honorific speech was used. For 'stranger', mention polite forms. For 'friend', explain informal choices. If 'child', note simplifications.]"
       }
       `;
-    // GPT-4-turbo gpt-3.5-turbo
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -117,61 +145,31 @@ export async function POST(request) {
 
     const data = await response.json();
 
-    // Log the raw response if there's an error
     if (!response.ok) {
       console.error("OpenAI API Error:", data);
       return NextResponse.json(
         { error: data.error?.message || "Error from OpenAI API" },
         {
           status: response.status,
-          headers: {
-            "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-          },
+          headers: { "Access-Control-Allow-Origin": ALLOW_ORIGIN },
         }
       );
     }
 
-    // Check if we have the expected data structure
     if (!data.choices?.[0]?.message?.content) {
       console.error("Unexpected API response structure:", data);
       return NextResponse.json(
         { error: "Invalid response from translation service" },
         {
           status: 500,
-          headers: {
-            "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-          },
+          headers: { "Access-Control-Allow-Origin": ALLOW_ORIGIN },
         }
       );
     }
 
+    let jsonResponse;
     try {
-      const jsonResponse = JSON.parse(data.choices[0].message.content.trim());
-      console.log(data);
-      // Validate the response has the required fields
-      if (!jsonResponse.translation) {
-        console.error("Invalid JSON response structure:", jsonResponse);
-        return NextResponse.json(
-          { error: "Invalid translation response format" },
-          {
-            status: 500,
-            headers: {
-              "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-            },
-          }
-        );
-      }
-
-      // Return with cache prevention headers
-      return NextResponse.json(jsonResponse, {
-        headers: {
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-          "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-        },
-      });
+      jsonResponse = JSON.parse(data.choices[0].message.content.trim());
     } catch (parseError) {
       console.error("JSON Parse Error:", {
         error: parseError,
@@ -181,22 +179,60 @@ export async function POST(request) {
         { error: "Failed to parse translation response" },
         {
           status: 500,
-          headers: {
-            "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-          },
+          headers: { "Access-Control-Allow-Origin": ALLOW_ORIGIN },
         }
       );
     }
+
+    if (!jsonResponse.translation) {
+      console.error("Invalid JSON response structure:", jsonResponse);
+      return NextResponse.json(
+        { error: "Invalid translation response format" },
+        {
+          status: 500,
+          headers: { "Access-Control-Allow-Origin": ALLOW_ORIGIN },
+        }
+      );
+    }
+
+    // Log to Airtable
+    const fieldsForAirtable = {
+      Text: text,
+      SourceLanguage: sourceLanguage,
+      TargetLanguage: targetLanguage,
+      TargetDialect: targetDialect || "",
+      SpeakerPronouns: speakerPronouns || "",
+      ListenerPronouns: listenerPronouns || "",
+      Formality: formality || "",
+      UID: uid || "",
+      UserEmail: userEmail || "",
+      Translation: jsonResponse.translation || "",
+      Romaji: jsonResponse.romaji || "",
+      FormalityUsed: jsonResponse.formalityUsed || "",
+      Notes: jsonResponse.notes || "",
+      // Timestamp: new Date().toISOString(),
+    };
+
+    try {
+      await logToAirtable(fieldsForAirtable);
+    } catch (e) {
+      console.error("Airtable logging threw:", e);
+    }
+
+    return NextResponse.json(jsonResponse, {
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+        "Access-Control-Allow-Origin": ALLOW_ORIGIN,
+      },
+    });
   } catch (error) {
     console.error("Server Error:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
-      {
-        status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "https://anydialect.duranirving.com/",
-        },
-      }
+      { status: 500, headers: { "Access-Control-Allow-Origin": ALLOW_ORIGIN } }
     );
   }
 }

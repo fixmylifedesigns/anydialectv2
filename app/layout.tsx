@@ -8,8 +8,7 @@ import { MobileNav } from "@/components/mobile-nav";
 import { MobileFooter } from "@/components/mobile-footer";
 import { FirebaseProvider } from "@/lib/firebase/firebase-provider";
 import { StripeProvider } from "@/lib/stripe/stripe-provider";
-import { Suspense } from "react";
-import { Loading } from "@/components/ui/loading";
+import { TimedLoader } from "@/components/ui/timed-loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,16 +50,18 @@ export default function RootLayout({
         >
           <FirebaseProvider>
             <StripeProvider>
-              {" "}
               <MobileNav />
               <div className="flex min-h-screen">
-                <Sidebar className="hidden md:flex" />
-
                 <main className="flex-1 overflow-auto pb-16 md:pb-0 md:ml-16">
-                  <Suspense fallback={<Loading />}>{children}</Suspense>
+                  {/* TimedLoader shows a spinner for at least 1 s */}
+                  <TimedLoader minDuration={1000}>
+                    <Sidebar className="hidden md:flex" />
+
+                    {children}
+                    <MobileFooter />
+                    <Toaster />
+                  </TimedLoader>
                 </main>
-                <MobileFooter />
-                <Toaster />
               </div>
             </StripeProvider>
           </FirebaseProvider>
